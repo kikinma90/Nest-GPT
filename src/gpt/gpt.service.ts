@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { audioToTextUseCase, orthographyCheckUseCase, prosConsDiscusserStreamUseCase, prosConsDiscusserUseCase , textToAudioGetterUseCase, textToAudioUseCase, translateUseCase} from './use-cases';
-import { AudioToTextDto, OrthographyDto, ProsConsDiscusserDto, TextToAudioDto, TranslateDto } from './dtos';
+import { ImageGenerationUseCase, audioToTextUseCase, getGeneratedImageUseCase, imageVariationUseCase, orthographyCheckUseCase, prosConsDiscusserStreamUseCase, prosConsDiscusserUseCase , textToAudioGetterUseCase, textToAudioUseCase, translateUseCase} from './use-cases';
+import { AudioToTextDto, ImageGenerationDto, ImageVariationDto, OrthographyDto, ProsConsDiscusserDto, TextToAudioDto, TranslateDto } from './dtos';
 import OpenAI from 'openai';
 
 @Injectable()
@@ -41,6 +41,18 @@ export class GptService {
     async audioToText(audioFile: Express.Multer.File, audioToTextDto: AudioToTextDto) {
         const {prompt} = audioToTextDto;
         return await audioToTextUseCase(this.openai, {audioFile, prompt});
+    }
+
+    async imageGeneration(imageGenerationDto: ImageGenerationDto) {
+        return await ImageGenerationUseCase(this.openai, {...imageGenerationDto})
+    }
+
+    async getGeneratedImage(fileName: string) {
+        return await getGeneratedImageUseCase({fileName})
+    }
+
+    async getGeneratedImageVariation({baseImage}: ImageVariationDto) {
+        return await imageVariationUseCase(this.openai, {baseImage})
     }
 
 }
